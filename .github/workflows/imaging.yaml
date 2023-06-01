@@ -1,0 +1,53 @@
+# Imaging
+# =======
+#
+# Creates and publishes Docker images to the Docker hub
+
+---
+
+name: Imaging
+
+
+# Driving Event
+# -------------
+#
+# What starts this workflow: a push to main
+
+on:
+    push:
+        branches:
+            - main
+
+
+# What to Do
+# ----------
+#
+# Build and push to Docker Hub
+
+jobs:
+    image-build-and-push:
+        name: 🌄 Image Build & Push
+        runs-on: ubuntu-latest
+        if: github.actor != 'pdsen-ci'
+        steps:
+            -
+                name: 🏢 Docker Buildx Setup
+                uses: docker/setup-buildx-action@v2
+
+            -
+                name: 🪵 Docker Hub Login
+                uses: docker/login-action@v2
+                with:
+                    username: ${{secrets.DOCKERHUB_USERNAME}}
+                    password: ${{secrets.DOCKERHUB_TOKEN}}
+            -
+                name: 😤 Build & Push
+                uses: docker/build-push-action@v4
+                with:
+                    push: true
+                    tags: nasapds/newman-with-testrail-reporter:latest
+                    secrets: GIT_AUTH_TOKEN=${{secrets.ADMIN_GITHUB_TOKEN}}
+
+...
+
+# -*- mode: yaml; indent: 4; fill-column: 120; coding: utf-8 -*-

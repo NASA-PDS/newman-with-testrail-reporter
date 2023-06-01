@@ -1,0 +1,4 @@
+*.sublime-*
+.gitignore
+.github/
+README.md
